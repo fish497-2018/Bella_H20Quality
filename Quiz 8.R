@@ -34,3 +34,6 @@ july_eb <- select(july_eb, depth..meters., salinity..psu., temperature..centigra
 View (july_eb)
 #Combined the three datasets into one large dataset using the bind_rows function from dplyr, and renamed the three datasets to specify the locations and used .id to create a new location column.
 full_data <- bind_rows(list(psbasin = july_psbasin, eb = july_eb, pt = july_pt), .id = "location")
+#Plot the pH for all three locations by depth using ggplot
+ggplot(full_data, aes(x = pH, y = depth..meters., color = location)) + geom_point(data = full_data, aes(x = pH, y = depth..meters.)) + labs (x = "pH", y = "Depth (m)")
+ggsave("pH_by_depth.jpg")
