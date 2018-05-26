@@ -5,6 +5,10 @@ date: "5/25/2018"
 output: html_document
 ---
 
+#**Introduction**#
+
+The following plots visualize raw data that has been downloaded from Washington Department of Ecology.  I was interested in picking three sites: Elliot Bay, Port Townsend, and Puget Sound Basin to examine the water quality.  I selected particular data using R functions such as filter() and select () and used packages such as ggplot to visualize the data.
+
 ```{r, echo = FALSE, include = FALSE}
 #Install dplyr and ggplot2
 #install.packages("dplyr")
@@ -57,7 +61,8 @@ ggplot(full_data, aes(x = pH, y = depth..meters., color = location)) + geom_poin
 The first plot I created represents the data from [Washington State Department of Ecology Water Quality Data](https://fortress.wa.gov/ecy/eap/marinewq/mwdataset.asp?theyear=2014&themonth=&ec=no&scrolly=21&htmlcsvpref=csv&estuarycode=1&staID=121). Using this dataset from the Washington Department of Ecology, I wanted to see how water quality during the summer of 2016. This was at the tail-end of a few summers of harmful algal bloom outbreaks, so I want to see how water quality was different in a few areas of the Puget Sound. I did not separate the locations in the same graph here, but will do so in the next plot.
 
 
-#**Plot 2: pH and Depth with facet_wrap**#
+#**Plot 2: pH and Depth with facet_wrap[^1]**#
+
 
 
 ```{r, echo = FALSE}
@@ -102,3 +107,5 @@ ggplot(data = full_data, aes(x = location, y= pH)) +
   coord_cartesian(ylim=c(7.5,8)) + 
   geom_bar(data = aves, stat = "identity") + labs(x = "Location", y = "pH")
 ```
+
+[^1] facet_wrap is a function in R that is embedded into the ggplot that allows you to tier a variable within the dataset.  For example, in my code, I used facet_wrap(location) to filter by the location of the surveys within the water quality data that I used.
