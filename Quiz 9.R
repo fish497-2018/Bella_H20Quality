@@ -1,0 +1,62 @@
+#Install dplyr and ggplot2
+install.packages("dplyr")
+library(dplyr)
+install.packages("ggplot2")
+library(ggplot2)
+#Read Puget Sound Basin Data and rename "psbasin"
+#
+psbasin <- read.csv("PugetSoundBasin_WP_July16.csv")
+psbasin <- PugetSoundBasin_WP_July16
+#
+#Filter the psbasin data to just include the July datasets
+july_psbasin <- filter(psbasin,date =="7/11/16")
+View(july_psbasin)
+#Select pertinent columns for water quality
+july_psbasin <- select(july_psbasin, depth..meters., salinity..psu., temperature..centigrade., chlorophyll.raw..ug.l., dissolved.oxygen..mg.l..raw, pH)
+#
+#Print modified data table with depth, salinity, temperature, chlorophyll, dissolved oxygen, and pH
+print(july_psbasin)
+#
+#Rename and read Port Townsend data to reflect the same columns as the july_psbasin data
+pt <- read.csv("PortTownsend_16")
+pt <- PortTownsend_16
+View(pt)
+july_pt <- filter(pt, date == "7/6/16")
+july_pt <- select(july_pt, depth..meters., salinity..psu., temperature..centigrade., chlorophyll.raw..ug.l., dissolved.oxygen..mg.l..raw, pH)
+View (july_pt)
+#Repeat same process as I dud with the Port Townsend and Puget Sound Basin datasets with the third dataset: Elliot Bay
+View(ElliotBay_16)
+eb <- read.csv("ElliotBay_16")
+eb <- ElliotBay_16
+View(eb)
+july_eb <- filter(eb, date == "7/11/16")
+july_eb <- select(july_eb, depth..meters., salinity..psu., temperature..centigrade., chlorophyll.raw..ug.l., dissolved.oxygen..mg.l..raw, pH)
+View (july_eb)
+#Combined the three datasets into one large dataset using the bind_rows function from dplyr, and renamed the three datasets to specify the locations and used .id to create a new location column.
+full_data <- bind_rows(list(psbasin = july_psbasin, eb = july_eb, pt = july_pt), .id = "location")
+#Plot the pH for all three locations by depth using ggplot
+ggplot(full_data, aes(x = pH, y = depth..meters., color = location)) + geom_point(data = full_data, aes(x = pH, y = depth..meters.)) + labs (x = "pH", y = "Depth (m)")
+ggsave("pH_by_depth.jpg")
+#Tried another way usig the facet_wrap. 
+ggplot(full_data) +  geom_point(aes(x = pH, y = depth..meters.)) + facet_wrap(~location) + labs(x = "pH", y = "Depth (m)") + ggtitle("Puget Sound pH in Elliot Bay, Puget Sound Basin, and Port Townsend")
+ggsave ("version2_nocolor_pH_and_depth.jpg")
+#Exercise 1: Generating improved plots
+#First Plot: Switching x and y axis so plot is more readable
+
+
+ggplot(full_data) +  geom_point(aes(x = depth..meters., y = pH)) + facet_wrap(~location) + labs(x = "Depth (m)", y = "pH") + ggtitle("Puget Sound pH in Elliot Bay, Puget Sound Basin, and Port Townsend")
+ggsave ("depthandpH.jpg")
+#Second Plots:
+
+# Turn averages of each location into new data frame
+aves <- full_data %>% 
+  group_by(location) %>% 
+  summarise(pH = mean(pH))
+
+# Plot as bar plot as suggested by a peer last week
+ggplot(data = full_data, aes(x = location, y= pH)) + 
+  coord_cartesian(ylim=c(7.5,8)) + 
+  geom_bar(data = aves, stat = "identity") + labs(x = "Location", y = "pH")
+
+
+
