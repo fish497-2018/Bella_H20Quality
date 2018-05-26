@@ -15,6 +15,10 @@ library(ggplot2)
 #
 ```
 
+
+#**Plot 1: pH and Depth**#
+
+
 ```{r, echo = FALSE}
 psbasin <- read.csv("Data/PugetSoundBasin_WP_July16.csv")
 
@@ -52,6 +56,10 @@ ggplot(full_data, aes(x = pH, y = depth..meters., color = location)) + geom_poin
 
 The first plot I created represents the data from [Washington State Department of Ecology Water Quality Data](https://fortress.wa.gov/ecy/eap/marinewq/mwdataset.asp?theyear=2014&themonth=&ec=no&scrolly=21&htmlcsvpref=csv&estuarycode=1&staID=121). Using this dataset from the Washington Department of Ecology, I wanted to see how water quality during the summer of 2016. This was at the tail-end of a few summers of harmful algal bloom outbreaks, so I want to see how water quality was different in a few areas of the Puget Sound. I did not separate the locations in the same graph here, but will do so in the next plot.
 
+
+#**Plot 2: pH and Depth with facet_wrap**#
+
+
 ```{r, echo = FALSE}
 #ggsave("pH_by_depth.jpg")
 #Tried another way usig the facet_wrap. 
@@ -60,6 +68,10 @@ ggplot(full_data) +  geom_point(aes(x = pH, y = depth..meters.)) + facet_wrap(~l
 ```
 
 This plot above represents the same data that I isolated from the 2016 for the three locations: Elliot Bay, Puget Sound Basin, and Port Townsend.  The plot above, however, uses facet_wrap to separate the three locations in visualization.
+
+
+#**Plot 3: Improved Plots with Reversed X and Y Axis**#
+
 
 ```{r, echo = FALSE}
 #Exercise 1: Generating improved plots
@@ -71,6 +83,11 @@ ggplot(full_data) +  geom_point(aes(x = depth..meters., y = pH)) + facet_wrap(~l
 ```
 
 This plot above shows the x and y axis switched from the previous two, representin the pH and depth of the three sites that were surveyed.
+
+
+#**Plot 4: Averages of Each Location**#
+
+
 
 ```{r, echo = FALSE}
 #Second Plots:
