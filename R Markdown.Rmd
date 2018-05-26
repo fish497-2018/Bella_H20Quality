@@ -5,7 +5,7 @@ date: "5/25/2018"
 output: html_document
 ---
 
-```{r}
+```{r, echo = FALSE, include = FALSE}
 #Install dplyr and ggplot2
 #install.packages("dplyr")
 library(dplyr)
@@ -13,8 +13,9 @@ library(dplyr)
 library(ggplot2)
 #Read Puget Sound Basin Data and rename "psbasin"
 #
+```
 
-
+```{r, echo = FALSE}
 psbasin <- read.csv("Data/PugetSoundBasin_WP_July16.csv")
 
 
@@ -22,42 +23,56 @@ psbasin <- read.csv("Data/PugetSoundBasin_WP_July16.csv")
 #
 #Filter the psbasin data to just include the July datasets
 july_psbasin <- filter(psbasin,date =="7/11/16")
-View(july_psbasin)
+
 #Select pertinent columns for water quality
 july_psbasin <- select(july_psbasin, depth..meters., salinity..psu., temperature..centigrade., chlorophyll.raw..ug.l., dissolved.oxygen..mg.l..raw, pH)
 #
 #Print modified data table with depth, salinity, temperature, chlorophyll, dissolved oxygen, and pH
-print(july_psbasin)
+#print(july_psbasin)
 #
 #Rename and read Port Townsend data to reflect the same columns as the july_psbasin data
-pt <- read.csv("PortTownsend_16")
-pt <- PortTownsend_16
-View(pt)
+pt <- read.csv("Data/PortTownsend_16.csv")
+
 july_pt <- filter(pt, date == "7/6/16")
 july_pt <- select(july_pt, depth..meters., salinity..psu., temperature..centigrade., chlorophyll.raw..ug.l., dissolved.oxygen..mg.l..raw, pH)
-View (july_pt)
+
 #Repeat same process as I dud with the Port Townsend and Puget Sound Basin datasets with the third dataset: Elliot Bay
-View(ElliotBay_16)
-eb <- read.csv("ElliotBay_16")
-eb <- ElliotBay_16
-View(eb)
+
+eb <- read.csv("Data/ElliotBay_16.csv")
+
+
 july_eb <- filter(eb, date == "7/11/16")
 july_eb <- select(july_eb, depth..meters., salinity..psu., temperature..centigrade., chlorophyll.raw..ug.l., dissolved.oxygen..mg.l..raw, pH)
-View (july_eb)
+
 #Combined the three datasets into one large dataset using the bind_rows function from dplyr, and renamed the three datasets to specify the locations and used .id to create a new location column.
 full_data <- bind_rows(list(psbasin = july_psbasin, eb = july_eb, pt = july_pt), .id = "location")
 #Plot the pH for all three locations by depth using ggplot
 ggplot(full_data, aes(x = pH, y = depth..meters., color = location)) + geom_point(data = full_data, aes(x = pH, y = depth..meters.)) + labs (x = "pH", y = "Depth (m)")
-ggsave("pH_by_depth.jpg")
+```
+
+The first plot I created represents the data from [Washington State Department of Ecology Water Quality Data](https://fortress.wa.gov/ecy/eap/marinewq/mwdataset.asp?theyear=2014&themonth=&ec=no&scrolly=21&htmlcsvpref=csv&estuarycode=1&staID=121). Using this dataset from the Washington Department of Ecology, I wanted to see how water quality during the summer of 2016. This was at the tail-end of a few summers of harmful algal bloom outbreaks, so I want to see how water quality was different in a few areas of the Puget Sound. I did not separate the locations in the same graph here, but will do so in the next plot.
+
+```{r, echo = FALSE}
+#ggsave("pH_by_depth.jpg")
 #Tried another way usig the facet_wrap. 
 ggplot(full_data) +  geom_point(aes(x = pH, y = depth..meters.)) + facet_wrap(~location) + labs(x = "pH", y = "Depth (m)") + ggtitle("Puget Sound pH in Elliot Bay, Puget Sound Basin, and Port Townsend")
-ggsave ("version2_nocolor_pH_and_depth.jpg")
+#ggsave ("version2_nocolor_pH_and_depth.jpg")
+```
+
+This plot above represents the same data that I isolated from the 2016 for the three locations: Elliot Bay, Puget Sound Basin, and Port Townsend.  The plot above, however, uses facet_wrap to separate the three locations in visualization.
+
+```{r, echo = FALSE}
 #Exercise 1: Generating improved plots
 #First Plot: Switching x and y axis so plot is more readable
 
 
 ggplot(full_data) +  geom_point(aes(x = depth..meters., y = pH)) + facet_wrap(~location) + labs(x = "Depth (m)", y = "pH") + ggtitle("Puget Sound pH in Elliot Bay, Puget Sound Basin, and Port Townsend")
-ggsave ("depthandpH.jpg")
+#ggsave ("depthandpH.jpg")
+```
+
+This plot above shows the x and y axis switched from the previous two, representin the pH and depth of the three sites that were surveyed.
+
+```{r, echo = FALSE}
 #Second Plots:
 
 # Turn averages of each location into new data frame
